@@ -1,6 +1,14 @@
 import pygame
 import random
 from typing import List, Tuple
+import os
+import winshell
+from win32com.client import Dispatch
+
+# Set window icon (add this code before pygame.init())
+icon_path = os.path.join(os.path.dirname(__file__), 'tetris_icon.ico')
+if os.path.exists(icon_path):
+    pygame.display.set_icon(pygame.image.load(icon_path))
 
 # Initialize Pygame
 pygame.init()
@@ -322,6 +330,21 @@ class Tetris:
         
         # Wait for a moment before closing
         pygame.time.wait(2000)
+
+def create_shortcut():
+    desktop = winshell.desktop()
+    path = os.path.join(desktop, "Tetris.lnk")
+    target = os.path.abspath(__file__)
+    
+    shell = Dispatch('WScript.Shell')
+    shortcut = shell.CreateShortCut(path)
+    shortcut.Targetpath = 'pythonw'
+    shortcut.Arguments = f'"{target}"'
+    shortcut.IconLocation = icon_path if os.path.exists(icon_path) else target
+    shortcut.save()
+
+# Uncomment the following line to create the shortcut
+create_shortcut()
 
 if __name__ == '__main__':
     game = Tetris()
