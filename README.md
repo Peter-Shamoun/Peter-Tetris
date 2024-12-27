@@ -60,16 +60,5 @@ A basic Tetris game built with Pygame.
 - Each level increases the falling speed of the pieces
 - Maximum fall speed is reached at higher levels
 
-## Development
-
-The game is built using Pygame and implements the following key features:
-
-- Wall kick system for piece rotation
-- Ghost piece preview for better placement
-- Smooth piece movement with initial and continuous movement delays
-- Responsive controls and collision detection
-- Dynamic difficulty scaling
-
-## License
-
-This project is open source and available under the MIT License.
+---
+ Made by Peter Shamoun 🧩
