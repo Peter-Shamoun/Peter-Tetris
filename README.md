@@ -1,16 +1,6 @@
 # Python Tetris Game
 
-A modern implementation of the classic Tetris game built with Pygame, featuring both light and dark modes, keyboard controls, and desktop shortcut creation capability.
-
-## Features
-
-- Classic Tetris gameplay
-- Light and dark theme support
-- Score, level, and lines tracking
-- Ghost piece preview
-- Pause functionality
-- Adjustable fall speed based on level
-- Desktop shortcut creation (Windows only)
+A basic Tetris game built with Pygame.
 
 ## Requirements
 
@@ -24,7 +14,8 @@ A modern implementation of the classic Tetris game built with Pygame, featuring 
 
 ## Installation
 
-1. Clone this repository or download the source files
+1. Clone this repository 
+
 2. Install the required packages:
    ```bash
    pip install -r requirements.txt
