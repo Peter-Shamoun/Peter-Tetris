@@ -40,12 +40,29 @@ SHAPES = [
 
 COLORS = [CYAN, YELLOW, MAGENTA, ORANGE, BLUE, GREEN, RED]
 
+# Color schemes
+LIGHT_THEME = {
+    'background': WHITE,
+    'grid': GRID_COLOR,
+    'text': BLACK,
+    'shadow': SHADOW_COLOR
+}
+
+DARK_THEME = {
+    'background': (40, 44, 52),    # Dark background
+    'grid': (70, 74, 82),          # Darker grid lines
+    'text': WHITE,                 # White text
+    'shadow': (100, 104, 112)      # Lighter shadow (changed from 60, 64, 72)
+}
+
 class Tetris:
     def __init__(self):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Tetris')
         self.clock = pygame.time.Clock()
         self.paused = False
+        self.dark_mode = False
+        self.theme = LIGHT_THEME
         self.reset_game()
 
     def reset_game(self):
@@ -138,12 +155,12 @@ class Tetris:
             self.fall_speed = max(50, 500 - (self.level - 1) * 50)  # Faster base speed and faster level scaling
 
     def draw(self) -> None:
-        self.screen.fill(WHITE)  # Change background to white
+        self.screen.fill(self.theme['background'])
         
         # Draw grid lines
         for x in range(GRID_WIDTH):
             for y in range(GRID_HEIGHT):
-                pygame.draw.rect(self.screen, GRID_COLOR,
+                pygame.draw.rect(self.screen, self.theme['grid'],
                                (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
         # Draw shadow - Create a deep copy of the current piece to avoid reference issues
@@ -161,7 +178,7 @@ class Tetris:
         for y, row in enumerate(shadow_piece['shape']):
             for x, cell in enumerate(row):
                 if cell:
-                    pygame.draw.rect(self.screen, SHADOW_COLOR,
+                    pygame.draw.rect(self.screen, self.theme['shadow'],
                                    ((shadow_piece['x'] + x) * BLOCK_SIZE,
                                     (shadow_piece['y'] + y) * BLOCK_SIZE,
                                     BLOCK_SIZE - 1, BLOCK_SIZE - 1))
@@ -184,16 +201,17 @@ class Tetris:
 
         # Draw score and level
         font = pygame.font.Font(None, 36)
-        score_text = font.render(f'Score: {self.score}', True, BLACK)  # Change text color to BLACK
-        level_text = font.render(f'Level: {self.level}', True, BLACK)
-        lines_text = font.render(f'Lines: {self.lines}', True, BLACK)
+        score_text = font.render(f'Score: {self.score}', True, self.theme['text'])
+        level_text = font.render(f'Level: {self.level}', True, self.theme['text'])
+        lines_text = font.render(f'Lines: {self.lines}', True, self.theme['text'])
+        controls_text = font.render('Press P to Pause', True, self.theme['text'])
+        dark_mode_text = font.render('Press D for Dark Mode', True, self.theme['text'])
         
         self.screen.blit(score_text, (GRID_WIDTH * BLOCK_SIZE + 10, 10))
         self.screen.blit(level_text, (GRID_WIDTH * BLOCK_SIZE + 10, 50))
         self.screen.blit(lines_text, (GRID_WIDTH * BLOCK_SIZE + 10, 90))
-
-        controls_text = font.render('Press P to Pause', True, BLACK)
         self.screen.blit(controls_text, (GRID_WIDTH * BLOCK_SIZE + 10, 130))
+        self.screen.blit(dark_mode_text, (GRID_WIDTH * BLOCK_SIZE + 10, 170))
 
         if self.paused:
             # Create semi-transparent overlay
@@ -227,6 +245,9 @@ class Tetris:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
                         self.paused = not self.paused
+                    elif event.key == pygame.K_d:
+                        self.dark_mode = not self.dark_mode
+                        self.theme = DARK_THEME if self.dark_mode else LIGHT_THEME
                     if not self.paused:
                         if event.key == pygame.K_LEFT:
                             self.moving_left = True
@@ -274,7 +295,7 @@ class Tetris:
                 if keys[pygame.K_DOWN]:
                     self.fall_speed = 50
                 else:
-                    self.fall_speed = max(50, 500 - (self.level - 1) * 50)  # Faster base speed and faster level scaling
+                    self.fall_speed = max(100, 1000 - (self.level - 1) * 100)
 
                 # Handle piece falling
                 if current_time - self.last_fall > self.fall_speed:
